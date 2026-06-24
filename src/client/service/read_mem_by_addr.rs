@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn read_memory_by_address(
-        &mut self,
+    pub(crate) async fn _read_memory_by_address(
+        &self,
         mem_loc: MemoryLocation,
     ) -> DoCanResult<Vec<u8>> {
         let data = request::ReadMemByAddr(mem_loc);

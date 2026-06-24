@@ -12,8 +12,8 @@ where
     C: Display + Clone + Hash + Eq + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn authentication(
-        &mut self,
+    pub(crate) async fn _authentication(
+        &self,
         auth_task: AuthenticationTask,
         data: request::Authentication,
     ) -> DoCanResult<response::Authentication> {

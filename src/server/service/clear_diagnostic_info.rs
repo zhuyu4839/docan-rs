@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn clear_diagnostic_info(
+    pub(crate) async fn _clear_diagnostic_info(
         &self,
         req: Request,
         cfg: &Configuration,

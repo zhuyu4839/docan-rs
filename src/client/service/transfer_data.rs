@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn transfer_data(
-        &mut self,
+    pub(crate) async fn _transfer_data(
+        &self,
         sequence: u8,
         data: Vec<u8>,
     ) -> DoCanResult<response::TransferData> {

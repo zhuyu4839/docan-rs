@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn ecu_reset(
-        &mut self,
+    pub(crate) async fn _ecu_reset(
+        &self,
         r#type: ECUResetType,
         suppress_positive: bool,
         addr_type: AddressType,

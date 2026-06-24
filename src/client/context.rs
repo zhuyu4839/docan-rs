@@ -1,4 +1,4 @@
-use crate::SecurityAlgo;
+use crate::DoCanError;
 use iso14229_1::{response::SessionTiming, Configuration, DataIdentifier};
 use rsutil::types::ByteOrder;
 use std::sync::Arc;
@@ -8,7 +8,7 @@ use tokio::sync::Mutex;
 pub(crate) struct Context {
     timing: Arc<Mutex<SessionTiming>>,
     cfg: Arc<Mutex<Configuration>>,
-    security_algo: Arc<Mutex<Option<SecurityAlgo>>>,
+    security_algo: Arc<Mutex<Option<uds_trait::SecurityAlgo<DoCanError>>>>,
     pub(crate) byte_order: ByteOrder,
     pub(crate) p2_offset: u64,
 }
@@ -50,12 +50,12 @@ impl Context {
     }
 
     #[inline(always)]
-    pub async fn set_security_algo(&self, algo: SecurityAlgo) {
+    pub async fn set_security_algo(&self, algo: uds_trait::SecurityAlgo<DoCanError>) {
         let _ = self.security_algo.lock().await.insert(algo);
     }
 
     #[inline(always)]
-    pub async fn get_security_algo(&self) -> Option<SecurityAlgo> {
+    pub async fn get_security_algo(&self) -> Option<uds_trait::SecurityAlgo<DoCanError>> {
         self.security_algo.lock().await.clone()
     }
 }

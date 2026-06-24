@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn request_file_transfer(
-        &mut self,
+    pub(crate) async fn _request_file_transfer(
+        &self,
         operation: ModeOfOperation,
         data: request::RequestFileTransfer,
     ) -> DoCanResult<response::RequestFileTransfer> {

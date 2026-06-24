@@ -3,7 +3,7 @@ mod service;
 mod session;
 mod util;
 
-use crate::{constants::LOG_TAG_SERVER, server::session::SessionManager, DoCanError, SecurityAlgo};
+use crate::{constants::LOG_TAG_SERVER, server::session::SessionManager, DoCanError};
 use iso14229_1::{response::SessionTiming, Configuration, DataIdentifier};
 use rsutil::types::ByteOrder;
 use serde::{Deserialize, Deserializer};
@@ -20,7 +20,7 @@ use iso15765_2::{
 };
 use rs_can::{CanDevice, CanFrame};
 use std::{fmt::Display, sync::Arc};
-use tokio::{spawn, task::JoinHandle};
+use tokio::task::JoinHandle;
 
 pub type DidSaLevel = HashMap<DataIdentifier, u8>;
 
@@ -55,15 +55,6 @@ pub struct Config {
     pub(crate) byte_order: ByteOrder,
 }
 
-#[async_trait::async_trait]
-pub trait Server {
-    async fn update_address(&self, address: Address);
-    async fn update_security_algo(&self, algo: SecurityAlgo);
-    async fn service_forever(&mut self, interval_us: u64);
-
-    async fn service_stop(&mut self);
-}
-
 #[derive(Clone)]
 pub struct DoCanServer<D, C, F> {
     isotp: CanIsoTp<D, C, F>,
@@ -88,12 +79,7 @@ where
         })
     }
 
-    #[inline(always)]
-    pub fn tp_layer(&mut self) -> CanIsoTp<D, C, F> {
-        self.isotp.clone()
-    }
-
-    async fn server(&mut self) {
+    pub(crate) async fn server(&mut self) {
         loop {
             let timing = self.context.get_active_timing().await;
             let cfg = self.context.get_cfg().clone();
@@ -106,67 +92,67 @@ where
                             Ok(req) => {
                                 if let Err(e) = match service {
                                     Service::SessionCtrl => {
-                                        self.session_ctrl(req, &cfg, timing.into()).await
+                                        self._session_ctrl(req, &cfg, timing.into()).await
                                     }
-                                    Service::ECUReset => self.ecu_reset(req, &cfg).await,
+                                    Service::ECUReset => self._ecu_reset(req, &cfg).await,
                                     Service::ClearDiagnosticInfo => {
-                                        self.clear_diagnostic_info(req, &cfg).await
+                                        self._clear_diagnostic_info(req, &cfg).await
                                     }
-                                    Service::ReadDTCInfo => self.read_dtc_info(req, &cfg).await,
-                                    Service::ReadDID => self.read_did(req, &cfg).await,
+                                    Service::ReadDTCInfo => self._read_dtc_info(req, &cfg).await,
+                                    Service::ReadDID => self._read_did(req, &cfg).await,
                                     Service::ReadMemByAddr => {
-                                        self.read_mem_by_addr(req, &cfg).await
+                                        self._read_mem_by_addr(req, &cfg).await
                                     }
                                     Service::ReadScalingDID => {
-                                        self.read_scaling_did(req, &cfg).await
+                                        self._read_scaling_did(req, &cfg).await
                                     }
                                     Service::SecurityAccess => {
-                                        self.security_access(req, &cfg).await
+                                        self._security_access(req, &cfg).await
                                     }
                                     Service::CommunicationCtrl => {
-                                        self.communication_ctrl(req, &cfg).await
+                                        self._communication_ctrl(req, &cfg).await
                                     }
                                     #[cfg(any(feature = "std2020"))]
-                                    Service::Authentication => self.authentication(req, &cfg).await,
+                                    Service::Authentication => self._authentication(req, &cfg).await,
                                     Service::ReadDataByPeriodId => {
-                                        self.read_data_by_pid(req, &cfg).await
+                                        self._read_data_by_pid(req, &cfg).await
                                     }
                                     Service::DynamicalDefineDID => {
-                                        self.dynamically_define_did(req, &cfg).await
+                                        self._dynamically_define_did(req, &cfg).await
                                     }
-                                    Service::WriteDID => self.write_did(req, &cfg).await,
-                                    Service::IOCtrl => self.io_ctrl(req, &cfg).await,
-                                    Service::RoutineCtrl => self.routine_ctrl(req, &cfg).await,
+                                    Service::WriteDID => self._write_did(req, &cfg).await,
+                                    Service::IOCtrl => self._io_ctrl(req, &cfg).await,
+                                    Service::RoutineCtrl => self._routine_ctrl(req, &cfg).await,
                                     Service::RequestDownload => {
-                                        self.request_download(req, &cfg).await
+                                        self._request_download(req, &cfg).await
                                     }
-                                    Service::RequestUpload => self.request_upload(req, &cfg).await,
-                                    Service::TransferData => self.transfer_data(req, &cfg).await,
+                                    Service::RequestUpload => self._request_upload(req, &cfg).await,
+                                    Service::TransferData => self._transfer_data(req, &cfg).await,
                                     Service::RequestTransferExit => {
-                                        self.request_transfer_exit(req, &cfg).await
+                                        self._request_transfer_exit(req, &cfg).await
                                     }
                                     #[cfg(any(feature = "std2013", feature = "std2020"))]
                                     Service::RequestFileTransfer => {
-                                        self.request_file_transfer(req, &cfg).await
+                                        self._request_file_transfer(req, &cfg).await
                                     }
                                     Service::WriteMemByAddr => {
-                                        self.write_mem_by_addr(req, &cfg).await
+                                        self._write_mem_by_addr(req, &cfg).await
                                     }
-                                    Service::TesterPresent => self.tester_present(req, &cfg).await,
+                                    Service::TesterPresent => self._tester_present(req, &cfg).await,
                                     #[cfg(any(feature = "std2006", feature = "std2013"))]
                                     Service::AccessTimingParam => {
-                                        self.access_timing_parameter(req, &cfg).await
+                                        self._access_timing_parameter(req, &cfg).await
                                     }
                                     Service::SecuredDataTrans => {
-                                        self.secured_data_trans(req, &cfg).await
+                                        self._secured_data_trans(req, &cfg).await
                                     }
                                     Service::CtrlDTCSetting => {
-                                        self.ctrl_dtc_setting(req, &cfg).await
+                                        self._ctrl_dtc_setting(req, &cfg).await
                                     }
                                     Service::ResponseOnEvent => {
-                                        self.response_on_event(req, &cfg).await
+                                        self._response_on_event(req, &cfg).await
                                     }
-                                    Service::LinkCtrl => self.link_ctrl(req, &cfg).await,
+                                    Service::LinkCtrl => self._link_ctrl(req, &cfg).await,
                                     Service::NRC => {
                                         self.negative_service(
                                             Service::NRC.into(),
@@ -200,7 +186,7 @@ where
         }
     }
 
-    async fn negative_service(&self, service: u8, code: Code) {
+    pub(crate) async fn negative_service(&self, service: u8, code: Code) {
         let data = vec![Service::NRC.into(), service, code.into()];
         if let Err(e) = self.isotp.transmit(AddressType::Physical, data).await {
             rsutil::error!(
@@ -211,7 +197,7 @@ where
         }
     }
 
-    async fn process_uds_error(&self, service: Service, e: Iso14229Error) {
+    pub(crate) async fn process_uds_error(&self, service: Service, e: Iso14229Error) {
         let code = match e {
             // Iso14229Error::InvalidParam(_) => {}
             // Iso14229Error::InvalidData(_) => {}
@@ -264,37 +250,25 @@ where
 }
 
 #[async_trait::async_trait]
-impl<D, C, F> Server for DoCanServer<D, C, F>
+impl<D, C, F> uds_trait::UdsLayer for DoCanServer<D, C, F>
 where
     D: CanDevice<Channel = C, Frame = F> + Clone + Send + 'static,
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    #[inline(always)]
+    type Error = DoCanError;
+    type Frame = F;
+    type IsoTp = CanIsoTp<D, C, F>;
+
+    fn tp_layer(&mut self) -> Self::IsoTp {
+        self.isotp.clone()
+    }
+
     async fn update_address(&self, address: Address) {
         self.isotp.update_address(address).await;
     }
 
-    #[inline(always)]
-    async fn update_security_algo(&self, algo: SecurityAlgo) {
+    async fn update_security_algo(&self, algo: uds_trait::SecurityAlgo<Self::Error>) {
         self.context.set_security_algo(algo).await;
-    }
-
-    async fn service_forever(&mut self, interval_us: u64) {
-        self.isotp.start(interval_us).await;
-        let mut clone = self.clone();
-        let session = self.session.clone();
-        let handle = spawn(async move { session.work().await });
-        self.handles.push(Arc::new(handle));
-        let handle = spawn(async move { clone.server().await });
-        self.handles.push(Arc::new(handle));
-    }
-
-    async fn service_stop(&mut self) {
-        self.isotp.stop().await;
-        for handle in &self.handles {
-            handle.abort();
-        }
-        rsutil::info!("{} stopped", LOG_TAG_SERVER);
     }
 }

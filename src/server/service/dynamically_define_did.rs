@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn dynamically_define_did(
+    pub(crate) async fn _dynamically_define_did(
         &self,
         req: Request,
         _cfg: &Configuration,

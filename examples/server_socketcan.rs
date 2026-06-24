@@ -1,8 +1,9 @@
-use docan_rs::{DoCanServer, Server};
+use docan_rs::DoCanServer;
 use rs_can::{CanDevice, DeviceBuilder};
 use socketcan_rs::SocketCan;
 use std::env;
 use tokio::signal::ctrl_c;
+use uds_trait::{UdsLayer as _, UdsServer as _};
 
 fn security_algo(_: u8, seed: &[u8], salt: &[u8]) -> docan_rs::DoCanResult<Option<Vec<u8>>> {
     Ok(Some(

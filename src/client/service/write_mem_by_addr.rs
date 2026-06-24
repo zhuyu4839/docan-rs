@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn write_memory_by_address(
-        &mut self,
+    pub(crate) async fn _write_memory_by_address(
+        &self,
         alfi: AddressAndLengthFormatIdentifier,
         mem_addr: u128,
         mem_size: u128,

@@ -13,8 +13,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn read_dtc_info(
-        &mut self,
+    pub(crate) async fn _read_dtc_info(
+        &self,
         r#type: DTCReportType,
         data: request::DTCInfo,
     ) -> DoCanResult<response::DTCInfo> {

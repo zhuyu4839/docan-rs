@@ -1,4 +1,4 @@
-use crate::{Config, DoCanError, SecurityAlgo};
+use crate::{Config, DoCanError};
 use bytes::{Bytes, BytesMut};
 use iso14229_1::{
     request::{self, ClearDiagnosticInfo, IOCtrl},
@@ -21,7 +21,7 @@ pub(crate) struct Context {
     pub(crate) did_st: Arc<Mutex<HashMap<DataIdentifier, Bytes>>>,
     /// dynamic did
     pub(crate) did_dyn: Arc<Mutex<HashMap<DataIdentifier, Bytes>>>,
-    pub(crate) sa_algo: Arc<Mutex<Option<SecurityAlgo>>>,
+    pub(crate) sa_algo: Arc<Mutex<Option<uds_trait::SecurityAlgo<DoCanError>>>>,
     pub(crate) sa_ctx: Arc<Mutex<Option<(u8, Bytes)>>>,
     #[allow(dead_code)]
     pub(crate) memories: Arc<Mutex<HashMap<MemoryLocation, Bytes>>>,
@@ -196,12 +196,12 @@ impl Context {
     }
 
     #[inline(always)]
-    pub(crate) async fn set_security_algo(&self, alg: SecurityAlgo) {
+    pub(crate) async fn set_security_algo(&self, alg: uds_trait::SecurityAlgo<DoCanError>) {
         let _ = self.sa_algo.lock().await.replace(alg);
     }
 
     #[inline(always)]
-    pub async fn get_security_algo(&self) -> Option<SecurityAlgo> {
+    pub async fn get_security_algo(&self) -> Option<uds_trait::SecurityAlgo<DoCanError>> {
         self.sa_algo.lock().await.clone()
     }
 

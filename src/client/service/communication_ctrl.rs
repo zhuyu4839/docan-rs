@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn communication_control(
-        &mut self,
+    pub(crate) async fn _communication_control(
+        &self,
         ctrl_type: CommunicationCtrlType,
         comm_type: CommunicationType,
         node_id: Option<request::NodeId>,

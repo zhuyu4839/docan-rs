@@ -8,6 +8,7 @@ use rs_can::{CanDevice, ChannelConfig, DeviceBuilder};
 use rsutil::types::ByteOrder;
 use std::sync::Arc;
 use tokio_stream::StreamExt as _;
+use uds_trait::{UdsClient, UdsLayer as _};
 use zlgcan_rs::{
     can::{ZCanChlMode, ZCanChlType, ZCanFrame},
     device::ZCanDeviceType,
@@ -19,7 +20,7 @@ use zlgcan_rs::{
 async fn main() -> anyhow::Result<()> {
     let device = init_driver().await?;
     let mut client = init_client(device.clone()).await?;
-    let src_tp_layer = client.tp_layer();
+    let mut src_tp_layer = client.tp_layer();
     src_tp_layer.start(100).await;
 
     let tp_layer = src_tp_layer.clone();

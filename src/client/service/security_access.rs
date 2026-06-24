@@ -12,7 +12,7 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn security_access(&mut self, level: u8, params: Vec<u8>) -> DoCanResult<Vec<u8>> {
+    pub(crate) async fn _security_access(&self, level: u8, params: Vec<u8>) -> DoCanResult<Vec<u8>> {
         let service = Service::SecurityAccess;
         let cfg = self.context.get_cfg().await;
         let request = Self::make_request(service, Some(level), params, &cfg)?;
@@ -24,8 +24,8 @@ where
         Ok(response.raw_data().to_vec())
     }
 
-    pub async fn unlock_security_access(
-        &mut self,
+    pub(crate) async fn _unlock_security_access(
+        &self,
         level: u8,
         params: Vec<u8>,
         salt: Vec<u8>,

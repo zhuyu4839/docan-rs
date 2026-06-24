@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn tester_present(
-        &mut self,
+    pub(crate) async fn _tester_present(
+        &self,
         r#type: TesterPresentType,
         suppress_positive: bool,
         addr_type: AddressType,

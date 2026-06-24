@@ -15,8 +15,8 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn session_ctrl(
-        &mut self,
+    pub(crate) async fn _session_ctrl(
+        &self,
         req: Request,
         cfg: &Configuration,
         data: Vec<u8>,

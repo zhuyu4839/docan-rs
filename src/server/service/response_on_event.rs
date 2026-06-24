@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn response_on_event(
+    pub(crate) async fn _response_on_event(
         &self,
         req: Request,
         _cfg: &Configuration,

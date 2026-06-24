@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn secured_data_transmit(
-        &mut self,
+    pub(crate) async fn _secured_data_transmit(
+        &self,
         apar: AdministrativeParameter,
         signature: SignatureEncryptionCalculation,
         anti_replay_cnt: u16,

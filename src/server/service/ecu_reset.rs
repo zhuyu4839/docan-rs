@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn ecu_reset(
+    pub(crate) async fn _ecu_reset(
         &self,
         req: Request,
         cfg: &Configuration,

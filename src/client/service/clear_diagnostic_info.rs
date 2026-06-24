@@ -13,8 +13,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn clear_dtc_info(
-        &mut self,
+    pub(crate) async fn _clear_dtc_info(
+        &self,
         group: U24,
         mem_sel: Option<u8>,
         addr_type: AddressType,

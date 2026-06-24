@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn request_upload(
+    pub(crate) async fn _request_upload(
         &self,
         req: Request,
         cfg: &Configuration,

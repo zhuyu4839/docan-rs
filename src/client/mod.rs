@@ -1,11 +1,11 @@
 mod context;
 mod service;
 
-use crate::{constants::LOG_TAG_CLIENT, error::DoCanError, SecurityAlgo};
+use crate::{constants::LOG_TAG_CLIENT, error::DoCanError};
 use iso14229_1::{
     request::Request,
     response::{Code, Response},
-    Configuration, DataIdentifier, Service, TesterPresentType, SUPPRESS_POSITIVE,
+    Configuration, Service, TesterPresentType, SUPPRESS_POSITIVE,
 };
 use iso15765_2::{
     can::{Address, AddressType, CanIsoTp},
@@ -46,33 +46,8 @@ where
     }
 
     #[inline(always)]
-    pub fn tp_layer(&mut self) -> &mut CanIsoTp<D, C, F> {
-        &mut self.isotp
-    }
-
-    #[inline(always)]
     pub fn byte_order(&self) -> ByteOrder {
         self.context.byte_order
-    }
-
-    #[inline(always)]
-    pub async fn update_address(&self, address: Address) {
-        self.isotp.update_address(address).await;
-    }
-
-    #[inline(always)]
-    pub async fn update_security_algo(&self, algo: SecurityAlgo) {
-        self.context.set_security_algo(algo).await;
-    }
-
-    #[inline(always)]
-    pub async fn add_data_identifier(&self, did: DataIdentifier, length: usize) {
-        self.context.add_did(did, length).await;
-    }
-
-    #[inline(always)]
-    pub async fn remove_data_identifier(&self, did: DataIdentifier) {
-        self.context.remove_did(&did).await;
     }
 
     #[inline(always)]
@@ -247,5 +222,29 @@ where
         let request = Self::make_request(service, Some(sub_func), vec![], cfg)?;
 
         Ok((service, request))
+    }
+}
+
+#[async_trait::async_trait]
+impl<D, C, F> uds_trait::UdsLayer for DoCanClient<D, C, F>
+where
+    D: CanDevice<Channel = C, Frame = F> + Clone + Send + 'static,
+    C: Display + Clone + Hash + Eq + Send + Sync + 'static,
+    F: CanFrame<Channel = C> + Clone + Display + 'static,
+{
+    type Error = DoCanError;
+    type Frame = F;
+    type IsoTp = CanIsoTp<D, C, F>;
+
+    fn tp_layer(&mut self) -> Self::IsoTp {
+        self.isotp.clone()
+    }
+
+    async fn update_address(&self, address: Address) {
+        self.isotp.update_address(address).await;
+    }
+
+    async fn update_security_algo(&self, algo: uds_trait::SecurityAlgo<Self::Error>) {
+        self.context.set_security_algo(algo).await;
     }
 }

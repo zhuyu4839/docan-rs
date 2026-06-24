@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn read_data_by_pid(
+    pub(crate) async fn _read_data_by_pid(
         &self,
         req: Request,
         cfg: &Configuration,

@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn access_timing_parameter(
+    pub(crate) async fn _access_timing_parameter(
         &self,
         req: Request,
         cfg: &Configuration,

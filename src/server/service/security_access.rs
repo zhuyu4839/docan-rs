@@ -19,7 +19,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn security_access(
+    pub(crate) async fn _security_access(
         &self,
         req: Request,
         cfg: &Configuration,

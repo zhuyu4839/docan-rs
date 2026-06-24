@@ -9,6 +9,7 @@ use rsutil::types::ByteOrder;
 use socketcan_rs::SocketCan;
 use std::{env, sync::Arc};
 use tokio_stream::StreamExt;
+use uds_trait::{UdsClient, UdsLayer as _};
 
 fn security_algo(_: u8, seed: &[u8], salt: &[u8]) -> docan_rs::DoCanResult<Option<Vec<u8>>> {
     Ok(Some(

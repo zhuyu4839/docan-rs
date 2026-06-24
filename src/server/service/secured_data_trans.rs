@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn secured_data_trans(
+    pub(crate) async fn _secured_data_trans(
         &self,
         req: Request,
         _cfg: &Configuration,

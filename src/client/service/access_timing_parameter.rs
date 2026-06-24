@@ -15,8 +15,8 @@ where
     C: Clone + Eq + Display + Send + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn access_timing_parameter(
-        &mut self,
+    pub(crate) async fn _access_timing_parameter(
+        &self,
         r#type: request::TimingParameterAccessType,
         parameter: Vec<u8>,
         suppress_positive: bool,

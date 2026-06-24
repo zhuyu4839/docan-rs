@@ -572,7 +572,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn read_dtc_info(
+    pub(crate) async fn _read_dtc_info(
         &self,
         req: Request,
         cfg: &Configuration,

@@ -12,8 +12,8 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn dynamically_define_data_by_identifier(
-        &mut self,
+    pub(crate) async fn _dynamically_define_data_by_identifier(
+        &self,
         r#type: DefinitionType,
         data: request::DynamicallyDefineDID,
         suppress_positive: bool,

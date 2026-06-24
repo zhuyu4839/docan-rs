@@ -13,50 +13,25 @@ keywords = [
     "DoCAN"
 ]
 
-[features]
-default = ["std2020", "client", "server"]
-
-client = ["iso15765-2/can", "iso15765-2/std2004"]
-server = ["iso15765-2/can", "iso15765-2/std2004", "rand", "serde", "serde_yaml"]
-
-std2006 = ["iso14229-1/std2006"]
-std2013 = ["iso14229-1/std2013"]
-std2020 = ["iso14229-1/std2020"]
-
 [lib]
 crate-type = ["lib", "cdylib", ]
 name = "docan_rs"
 
 [dependencies]
 async-trait = "0.1"
-bytes = "1.11"
+bytes = "1.12"
 hex = "0.4"
+iso14229-1 = { version = "0.1", default-features = false }
+iso15765-2 = { version = "0.1", default-features = false, features = ["can"] }
 log = "0.4"
+rand = { version = "0.10", optional = true }
 rs-can = "0.4"
 rsutil = { version = "0.1", features = ["log", "types"] }
+serde = { version = "1.0", optional = true }
+serde_yaml = { version = "0.9", optional = true }
 thiserror = "2"
 tokio = { version = "1", features = ["time", "fs"] }
-
-[dependencies.iso14229-1]
-version = "0.1.0"
-default-features = false
-optional = true
-
-[dependencies.iso15765-2 ]
-version = "0.1.0"
-default-features = false
-
-[dependencies.rand]
-version = "0.10"
-optional = true
-
-[dependencies.serde]
-version = "1"
-optional = true
-
-[dependencies.serde_yaml]
-version = "0.9"
-optional = true
+uds-trait = { version = "0.1", default-features = false }
 
 [dev-dependencies]
 anyhow = "1"
@@ -67,3 +42,15 @@ socketcan-rs = "0.4"
 tokio = { version = "1.52", features = ["macros", "rt-multi-thread", "signal"] }
 tokio-stream = "0.1"
 zlgcan = "0.4"
+
+[features]
+default = ["std2020", "client", "server"]
+
+client = ["uds-trait/client", "can2004"]
+server = ["uds-trait/server", "can2004", "rand", "serde", "serde_yaml"]
+
+can2004 = ["iso15765-2/std2004", "uds-trait/can2004"]
+can2016 = ["iso15765-2/std2016", "uds-trait/can2016"]
+std2006 = ["iso14229-1/std2006", "uds-trait/std2006"]
+std2013 = ["iso14229-1/std2013", "uds-trait/std2013"]
+std2020 = ["iso14229-1/std2020", "uds-trait/std2020"]

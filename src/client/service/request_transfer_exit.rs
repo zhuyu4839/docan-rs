@@ -12,7 +12,7 @@ where
     C: Clone + Eq + Display + Hash + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub async fn request_transfer_exit(&mut self, parameter: Vec<u8>) -> DoCanResult<Vec<u8>> {
+    pub(crate) async fn _request_transfer_exit(&self, parameter: Vec<u8>) -> DoCanResult<Vec<u8>> {
         let cfg = self.context.get_cfg().await;
         let request = Self::make_request(Service::RequestTransferExit, None, parameter, &cfg)?;
 

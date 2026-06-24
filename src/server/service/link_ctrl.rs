@@ -15,7 +15,7 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    pub(crate) async fn link_ctrl(
+    pub(crate) async fn _link_ctrl(
         &self,
         req: Request,
         cfg: &Configuration,
