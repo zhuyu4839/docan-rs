@@ -40,7 +40,6 @@ mod request_transfer_exit; // 0x37 ✅
 mod request_upload; // 0x35 ✅
 mod transfer_data; // 0x36 ✅
 
-use crate::DoCanError;
 use iso14229_1::{utils::U24, *};
 use rs_can::{CanDevice, CanFrame};
 use std::{fmt::Display, hash::Hash};
@@ -52,8 +51,6 @@ where
     C: Display + Clone + Hash + Eq + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    type Error = DoCanError;
-
     async fn add_data_identifier(&self, did: DataIdentifier, length: usize) {
         self.context.add_did(did, length).await;
     }

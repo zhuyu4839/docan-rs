@@ -54,8 +54,6 @@ where
     C: Clone + Eq + Display + Send + Sync + 'static,
     F: CanFrame<Channel = C> + Clone + Display + 'static,
 {
-    type Error = DoCanError;
-
     async fn service_forever(&mut self, interval_us: u64) {
         self.isotp.start(interval_us).await;
         let mut clone = self.clone();
