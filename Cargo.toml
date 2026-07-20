@@ -21,8 +21,8 @@ name = "docan_rs"
 async-trait = "0.1"
 bytes = "1.12"
 hex = "0.4"
-iso14229-1 = { version = "0.1", default-features = false }
-iso15765-2 = { version = "0.1", default-features = false, features = ["can"] }
+iso14229-1 = { version = "0.1", default-features = false, git = "https://github.com/jesses2025smith/iso-std-rs", branch = "develop", package = "iso14229-1" }
+iso15765-2 = { version = "0.1", default-features = false, features = ["can"], git = "https://github.com/jesses2025smith/iso-std-rs", branch = "develop", package = "iso15765-2" }
 log = "0.4"
 rand = { version = "0.10", optional = true }
 rs-can = "0.4"
@@ -31,7 +31,7 @@ serde = { version = "1.0", optional = true }
 serde_yaml = { version = "0.9", optional = true }
 thiserror = "2"
 tokio = { version = "1", features = ["time", "fs"] }
-uds-trait = { version = "0.1", default-features = false }
+uds-trait = { version = "0.1", default-features = false, git = "https://github.com/jesses2025smith/uds-trait" }
 
 [dev-dependencies]
 anyhow = "1"
